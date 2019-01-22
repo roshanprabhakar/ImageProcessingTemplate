@@ -11,16 +11,36 @@ import java.awt.image.ColorConvertOp;
 
 public class RImage {
 
-    BufferedImage image;
-    String path;
+    private ConvolutionFilter k;
+    private BufferedImage image;
+    private String path;
 
     public RImage(String filepath) {
+        loadImage(filepath);
+    }
+
+    public RImage(String filepath, short[][] kernel) {
+        loadImage(filepath);
+        this.k = new ConvolutionFilter(kernel);
+    }
+
+    public int[][] convolve(boolean willReturn) {
         try {
-            image = ImageIO.read(new File(filepath));
-            this.path = filepath;
-        } catch (IOException e) {
-            System.out.println("IOException encountered while attempting to extract image from " + filepath);
+            int[][] pixels = k.convolve(getBWPixelGrid());
+            if (willReturn) {
+                return pixels;
+            } else {
+                this.setImage(pixels);
+                return null;
+            }
+        } catch (NullPointerException e) {
+            System.err.println("please load a convolution filter");
+            return null;
         }
+    }
+
+    public void loadKernel(short[][] kernel) {
+        this.k = new ConvolutionFilter(kernel);
     }
 
     public int[][] getRGBPixelsGrid() {
@@ -82,4 +102,16 @@ public class RImage {
         frame.pack();
         frame.setVisible(true);
     }
+
+    //HELPERS
+    private void loadImage(String filepath) {
+        try {
+            image = ImageIO.read(new File(filepath));
+            this.path = filepath;
+        } catch (IOException e) {
+            System.out.println("IOException encountered while attempting to extract image from " + filepath);
+        }
+    }
+
+
 }

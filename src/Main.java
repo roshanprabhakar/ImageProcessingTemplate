@@ -2,9 +2,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        MutableImage mi = new MutableImage("openFieldTest.jpg");
-        mi.setImage(mi.getBWPixelGrid());
-        mi.display();
-
+        RImage image = new RImage("openFieldTest.jpg");
+        image.loadKernel(new short[][]{
+                {-1, -1, -1},
+                {-1, 8, -1},
+                {-1, -1, -1}
+        });
+        image.convolve(false);
+        image.display();
     }
 }

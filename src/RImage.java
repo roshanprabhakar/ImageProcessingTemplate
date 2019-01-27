@@ -36,20 +36,6 @@ public class RImage {
         }
     }
 
-    public int[][] getColorPixelGrid() {
-        int[][] colorPixelGrid = new int[image.getHeight()][image.getWidth()];
-        for (int r = 0; r < colorPixelGrid.length; r++) {
-            for (int c = 0; c < colorPixelGrid[r].length; c++) {
-                colorPixelGrid[r][c] = image.getRGB(c, r);
-            }
-        }
-        return colorPixelGrid;
-    }
-
-    public void convertToGreyScale() {
-        setBWPixels(getBWPixelGrid());
-    }
-
     public short[][] getBWPixelGrid() {
         short[][] greyScale = new short[image.getHeight()][image.getWidth()];
         for (int r = 0; r < image.getHeight(); r++) {
@@ -66,6 +52,16 @@ public class RImage {
                 image.setRGB(c, r, new Color(greyScale[r][c], greyScale[r][c], greyScale[r][c]).getRGB());
             }
         }
+    }
+
+    public int[][] getColorPixelGrid() {
+        int[][] colorPixelGrid = new int[image.getHeight()][image.getWidth()];
+        for (int r = 0; r < colorPixelGrid.length; r++) {
+            for (int c = 0; c < colorPixelGrid[r].length; c++) {
+                colorPixelGrid[r][c] = image.getRGB(c, r);
+            }
+        }
+        return colorPixelGrid;
     }
 
     public void setColorPixelGrid(int[][] grid) {
@@ -93,10 +89,6 @@ public class RImage {
             }
         }
         return bwpixels;
-    }
-
-    public void convertToPolychrome(int shades) {
-        setBWPixels(getPolychrome(5));
     }
 
     public int[][] getMulticolored(int colors) {
@@ -137,11 +129,7 @@ public class RImage {
         return multicolored;
     }
 
-    public void convertToMultiColor(int colors) {
-        setColorPixelGrid(getMulticolored(colors));
-    }
-
-    public short[][] convertToNegative() {
+    public short[][] getNegativePixelGrid() {
         short[][] bwpixels = getBWPixelGrid();
         for (int r = 0; r < bwpixels.length; r++) {
             for (int c = 0; c < bwpixels[r].length; c++) {

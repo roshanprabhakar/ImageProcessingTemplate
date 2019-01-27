@@ -1,6 +1,6 @@
 public class ConvolutionFilter {
 
-    private short[][] kernel;
+    private final short[][] kernel;
     private int weight;
     private int totalBits;
 
@@ -12,12 +12,9 @@ public class ConvolutionFilter {
         return kernel;
     }
 
-    public int getTotalBits() {
-        return totalBits;
-    }
-
     public ConvolutionFilter(short[][] kernel) {
         this.kernel = kernel;
+        totalBits = 0;
 
         int sum = 0;
 
@@ -32,28 +29,50 @@ public class ConvolutionFilter {
         this.weight = sum;
     }
 
+    @SuppressWarnings("Duplicates")
     public int[][] convolve(int[][] img) {
-        int[][] copy = deepClone(img);
+        int[][] copy = new int[img.length][img[0].length];
         for (int r = 0; r < img.length - kernel.length; r++) {
             for (int c = 0; c < img[r].length - kernel.length; c++) {
-//                int sum = 0;
-//                for (int i = 0; i < kernel.length; i++) {
-//                    for (int j = 0; j < kernel[i].length; j++) {
-//                        sum = img[r + i][c + j] * kernel[i][j];
-//                    }
-//                }
-//
-//                sum /= totalBits;
-//                if (sum < 0)  sum = 0;
-//                copy[r][c] = sum;
-                copy[r][c] = 250;
+                int sum = 0;
+                for (int i = 0; i < kernel.length; i++) {
+                    for (int j = 0; j < kernel[i].length; j++) {
+                        sum += img[r + i][c + j] * kernel[i][j];
+                    }
+                }
+                sum /= totalBits;
+                if (sum < 0) sum = 0;
+                System.out.println(sum);
+                copy[r][c] = sum;
             }
         }
         return copy;
     }
 
-    private int[][] deepClone(int[][] img) {
-        int[][] out = img.clone();
+    @SuppressWarnings("Duplicates")
+    public short[][] convolve(short[][] img) {
+        short[][] copy = new short[img.length][img[0].length];
+        for (int r = 0; r < img.length - kernel.length; r++) {
+            for (int c = 0; c < img[r].length - kernel.length; c++) {
+                int sum = 0;
+                for (int i = 0; i < kernel.length; i++) {
+                    for (int j = 0; j < kernel[i].length; j++) {
+                        sum += img[r + i][c + j] * kernel[i][j];
+                    }
+                }
+                sum /= totalBits;
+                if (sum < 0) sum = 0;
+                System.out.println(sum);
+                copy[r][c] = (short) sum;
+            }
+        }
+        return copy;
+    }
+
+
+    @SuppressWarnings("Duplicates")
+    private short[][] deepClone(short[][] img) {
+        short[][] out = img.clone();
         for (int r = 0; r < img.length; r++) {
             out[r] = img[r].clone();
         }

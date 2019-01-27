@@ -26,7 +26,7 @@ public class RImage {
 
     public int[][] convolve(boolean willReturn) {
         try {
-            int[][] pixels = k.convolve(getBWPixelGrid());
+            int[][] pixels = k.convolve(getRGBPixelsGrid());
             if (willReturn) {
                 return pixels;
             } else {
@@ -95,6 +95,7 @@ public class RImage {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     public void display() {
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());

@@ -8,7 +8,9 @@ import java.util.ArrayList;
 
 public class RImage {
 
+    private String filepath;
     private BufferedImage image;
+
     private int[][] colors;
     private short[][] RED;
     private short[][] GREEN;
@@ -33,6 +35,9 @@ public class RImage {
                     colors[r][c] = image.getRGB(c, r);
                 }
             }
+
+            this.filepath = path;
+
         } catch (IOException e) {
             System.err.println("unknown IOException --traceback constructor");
         }
@@ -173,18 +178,39 @@ public class RImage {
             for (int c = 0; c < image.getWidth(); c++) {
                 difference = RED[r][c] - CENTER;
                 difference *= increase;
+                if (Math.abs(difference) > CENTER) {
+                    if (difference > 0) difference = CENTER;
+                    else difference = -1 * CENTER;
+                }
                 RED[r][c] = (short) (CENTER + difference);
                 difference = BLUE[r][c] - CENTER;
                 difference *= increase;
+                if (Math.abs(difference) > CENTER) {
+                    if (difference > 0) difference = CENTER;
+                    else difference = -1 * CENTER;
+                }
                 BLUE[r][c] = (short) (CENTER + difference);
                 difference = GREEN[r][c] - CENTER;
                 difference *= increase;
+                if (Math.abs(difference) > CENTER) {
+                    if (difference > 0) difference = CENTER;
+                    else difference = -1 * CENTER;
+                }
                 GREEN[r][c] = (short) (CENTER + difference);
             }
         }
+        return recombine();
     }
 
-    private int[][] recombine
+    private int[][] recombine() {
+        int[][] out = new int[image.getHeight()][image.getWidth()];
+        for (int r = 0; r < image.getHeight(); r++) {
+            for (int c = 0; c < image.getWidth(); c++) {
+                out[r][c] = new Color(RED[r][c], BLUE[r][c], GREEN[r][c]).getRGB();
+            }
+        }
+        return out;
+    }
 
     public void display() {
         JFrame frame = new JFrame();

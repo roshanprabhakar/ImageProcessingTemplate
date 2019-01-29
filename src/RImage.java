@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class RImage {
-    BufferedImage image;
-    ConvolutionFilter k;
-    int[][] colors;
-    short[][] RED;
-    short[][] GREEN;
-    short[][] BLUE;
+
+    private BufferedImage image;
+    private int[][] colors;
+    private short[][] RED;
+    private short[][] GREEN;
+    private short[][] BLUE;
+
+    private final double CENTER = (double) 255 / 2;
 
     public RImage(String path) {
         try {
@@ -123,7 +125,7 @@ public class RImage {
                     }
                 }
 
-                multicolored[r][c] = new Color(red, blue, green).getRGB();
+                multicolored[r][c] = new Color(red, green, blue).getRGB();
             }
         }
         return multicolored;
@@ -153,7 +155,37 @@ public class RImage {
         return pixels;
     }
 
-    @SuppressWarnings("Duplicates")
+    public int[][] getBGRGrid() {
+        int[][] switched = new int[image.getHeight()][image.getWidth()];
+        for (int r = 0; r < image.getHeight(); r++) {
+            for (int c = 0; c < image.getWidth(); c++) {
+                Color color = new Color(image.getRGB(c, r));
+                Color newColor = new Color(color.getBlue(), color.getGreen(), color.getRed());
+                switched[r][c] = newColor.getRGB();
+            }
+        }
+        return switched;
+    }
+
+    public int[][] getEmbossed(double increase) {
+        double difference;
+        for (int r = 0; r < image.getHeight(); r++) {
+            for (int c = 0; c < image.getWidth(); c++) {
+                difference = RED[r][c] - CENTER;
+                difference *= increase;
+                RED[r][c] = (short) (CENTER + difference);
+                difference = BLUE[r][c] - CENTER;
+                difference *= increase;
+                BLUE[r][c] = (short) (CENTER + difference);
+                difference = GREEN[r][c] - CENTER;
+                difference *= increase;
+                GREEN[r][c] = (short) (CENTER + difference);
+            }
+        }
+    }
+
+    private int[][] recombine
+
     public void display() {
         JFrame frame = new JFrame();
         frame.getContentPane().setLayout(new FlowLayout());
@@ -161,29 +193,4 @@ public class RImage {
         frame.pack();
         frame.setVisible(true);
     }
-
-//
-//    public void loadConvolutionKernel(short[][] kernel) {
-//        k = new ConvolutionFilter(kernel);
-//    }
-//
-//    public void convolveImageChannels() {
-//        try {
-//            //error: convolving makes it all zero
-//            short[][] newRed = k.convolve(RED);
-//            short[][] newGreen = k.convolve(GREEN);
-//            short[][] newBlue = k.convolve(BLUE);
-//            reconstruct(newRed, newGreen, newBlue);
-//        } catch (NullPointerException e) {
-//            System.err.println("Please load a convolution kernel");
-//        }
-//    }
-//
-//    private void reconstruct(short[][] r, short[][] g, short[][] b) {
-//        for (int row = 0; row < image.getHeight(); row++) {
-//            for (int col = 0; col < image.getWidth(); col++) {
-//                image.setRGB(col, row, new Color(r[row][col], g[row][col], b[row][col]).getRGB());
-//            }
-//        }
-//    }
 }

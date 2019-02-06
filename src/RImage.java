@@ -160,18 +160,6 @@ public class RImage {
         return pixels;
     }
 
-    public int[][] getBGRGrid() {
-        int[][] switched = new int[image.getHeight()][image.getWidth()];
-        for (int r = 0; r < image.getHeight(); r++) {
-            for (int c = 0; c < image.getWidth(); c++) {
-                Color color = new Color(image.getRGB(c, r));
-                Color newColor = new Color(color.getBlue(), color.getGreen(), color.getRed());
-                switched[r][c] = newColor.getRGB();
-            }
-        }
-        return switched;
-    }
-
     public int[][] getEmbossed(double increase) {
         double difference;
         for (int r = 0; r < image.getHeight(); r++) {
@@ -200,6 +188,30 @@ public class RImage {
             }
         }
         return recombine();
+    }
+
+    public short[][] getOutlined() {
+        int threshhold = 0;
+        short[][] frameDifference = new short[image.getHeight() + 5][image.getWidth()];
+        short[][] original = getBWPixelGrid();
+        for (int r = 0; r < image.getHeight(); r++) {
+            for (int c = 5; c < image.getWidth(); c++) {
+                Color color = new Color(image.getRGB(c, r));
+                frameDifference[r][c] = (short) ((color.getRed() + color.getBlue() + color.getGreen()) / 3);
+            }
+        }
+        for (int r = 0; r < original.length; r++) {
+            for (int c = 0; c < original[r].length; c++) {
+                System.out.println(frameDifference[r][c] + " " + original[r][c]);
+
+                if (Math.abs(frameDifference[r][c] - original[r][c]) > threshhold) {
+                    original[r][c] = 255;
+                } else {
+                    original[r][c] = 0;
+                }
+            }
+        }
+        return original;
     }
 
     private int[][] recombine() {

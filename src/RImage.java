@@ -214,6 +214,34 @@ public class RImage {
         return original;
     }
 
+    public short[][] circleCrop(Point center, int radius) {
+
+    }
+
+    public short[][] getBWEmbossed(int factor, int center) {
+        short[][] pixels = getBWPixelGrid();
+        int[][] embossed = new int[pixels.length][pixels[0].length];
+        for (int r = 0; r < pixels.length; r++) {
+            for (int c = 0; c < pixels[r].length; c++) {
+                embossed[r][c] = center + (pixels[r][c] - center) * factor;
+            }
+        }
+        return clip(embossed);
+    }
+
+    private short[][] clip(int[][] pixels) {
+        short[][] clipped = new short[pixels.length][pixels[0].length];
+        for (int r = 0; r < pixels.length; r++) {
+            for (int c = 0; c < pixels[r].length; c++) {
+                if (pixels[r][c] > 255) clipped[r][c] = 255;
+                else if (pixels[r][c] < 0) clipped[r][c] = 0;
+                else clipped[r][c] = (short) pixels[r][c];
+            }
+        }
+
+        return clipped;
+    }
+
     private int[][] recombine() {
         int[][] out = new int[image.getHeight()][image.getWidth()];
         for (int r = 0; r < image.getHeight(); r++) {

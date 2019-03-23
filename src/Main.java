@@ -1,11 +1,12 @@
 public class Main {
 
-    public static String path = "chewy.jpg";;
+    public static String path = "test.jpg";;
 
     public static void main(String[] args) {
         RImage image = new RImage(path);
-        int[][] imageMulticolored = image.getMulticolored(2);
-        image.setColorPixelGrid(imageMulticolored);
+
+        image.setBWPixels(image.getBWEmbossed(3, 255/2));
+
         image.display();
     }
 }

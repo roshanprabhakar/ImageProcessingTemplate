@@ -18,6 +18,16 @@ public class RImage {
 
     private final double CENTER = (double) 255 / 2;
 
+    public RImage(short[][] pixels) {
+        BufferedImage image = new BufferedImage(pixels[0].length, pixels.length, BufferedImage.TYPE_INT_RGB);
+        for (int r = 0; r < pixels.length; r++) {
+            for (int c = 0; c < pixels[r].length; c++) {
+                image.setRGB(c, r, new Color(pixels[r][c], pixels[r][c], pixels[r][c]).getRGB());
+            }
+        }
+        this.image = image;
+    }
+
     public RImage(String path) {
         try {
             this.image = ImageIO.read(new File(path));
@@ -214,8 +224,20 @@ public class RImage {
         return original;
     }
 
-    public short[][] circleCrop(Point center, int radius) {
+    public short[][] addWhiteBorder(int radius, short[][] pixels) {
+        short[][] bordered = new short[pixels.length + radius * 2][pixels[0].length + radius * 2];
+        for (int r = 0; r < pixels.length; r++) {
+            for (int c = 0; c < pixels[r].length; c++) {
+                bordered[r][c] = 255;
+            }
+        }
 
+        for (int r = 0; r < pixels.length; r++) {
+            for (int c = 0; c < pixels[r].length; c++) {
+                bordered[r + radius - 1][c + radius - 1] = pixels[r][c];
+            }
+        }
+        return bordered;
     }
 
     public short[][] getBWEmbossed(int factor, int center) {
@@ -258,5 +280,14 @@ public class RImage {
         frame.getContentPane().add(new JLabel(new ImageIcon(image)));
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void writeToFile(String path) {
+        File outputfile = new File(path);
+        try {
+            ImageIO.write(image, "jpg", outputfile);
+        } catch (IOException e) {
+            System.out.println("could not setup file");
+        }
     }
 }

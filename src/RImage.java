@@ -226,8 +226,8 @@ public class RImage {
 
     public short[][] addWhiteBorder(int radius, short[][] pixels) {
         short[][] bordered = new short[pixels.length + radius * 2][pixels[0].length + radius * 2];
-        for (int r = 0; r < pixels.length; r++) {
-            for (int c = 0; c < pixels[r].length; c++) {
+        for (int r = 0; r < bordered.length; r++) {
+            for (int c = 0; c < bordered[r].length; c++) {
                 bordered[r][c] = 255;
             }
         }
